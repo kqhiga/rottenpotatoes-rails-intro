@@ -12,10 +12,14 @@ class MoviesController < ApplicationController
     @ratings_to_show = []
     if params.include?(:ratings) 
       @ratings_to_show = params[:ratings].keys
+    elsif session.include?(:ratings)
+      @ratings_to_show = session[:ratings]
     end
-    @sort_by = params[:sort_by]
+    @sort_by = params[:sort_by] || session[:sort_by]
     @movies = Movie.with_ratings(@ratings_to_show, @sort_by)
     @all_ratings = Movie.all_ratings
+    session[:sort_by] = @sort_by
+    session[:ratings] = @ratings_to_show
   end
 
   def new
@@ -56,5 +60,5 @@ class MoviesController < ApplicationController
   def movie_params
     params.require(:movie).permit(:title, :rating, :description, :release_date)
   end
- 
+
 end
