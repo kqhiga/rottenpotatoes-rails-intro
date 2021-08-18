@@ -13,7 +13,8 @@ class MoviesController < ApplicationController
     if params.include?(:ratings) 
       @ratings_to_show = params[:ratings].keys
     end
-    @movies = Movie.with_ratings(@ratings_to_show)
+    @sort_by = params[:sort_by]
+    @movies = Movie.with_ratings(@ratings_to_show, @sort_by)
     @all_ratings = Movie.all_ratings
   end
 
@@ -43,6 +44,10 @@ class MoviesController < ApplicationController
     @movie.destroy
     flash[:notice] = "Movie '#{@movie.title}' deleted."
     redirect_to movies_path
+  end
+  
+  def self.convert_to_hash(arr)
+    Hash[arr.map{ |key| [key, 1]}]
   end
 
   private
